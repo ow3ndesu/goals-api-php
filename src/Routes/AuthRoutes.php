@@ -36,6 +36,13 @@ return function (App $app, $authMiddleware) {
         }
 
         $pdo = DB::get();
+
+        // 🔒 Rate limiting check
+        if (!Helpers::checkRateLimit($pdo, $ip, '/auth/login', intval($_ENV['LIMIT']), intval($_ENV['WINDOW_SECONDS']))) {
+            return Helpers::jsonError($resp, 'Too many login attempts. Try again later.', 429);
+        }
+
+        $pdo = DB::get();
         $stmt = $pdo->prepare("SELECT id, email, password_hash FROM users WHERE email = :email");
         $stmt->execute([':email' => $email]);
         $user = $stmt->fetch();
