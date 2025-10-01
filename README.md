@@ -45,13 +45,13 @@ Using `db.sql` create the database and the tables necessary. Process may vary in
 
 ### 4. Run seeder
 ```bash
-php -S 0.0.0.0:8080 .\seeder.php
+php -S localhost:8080 .\seeder.php
 ```
 This will output the credentials of the seeded account (**Already** included in postman collection).
 
 ### 5. Run the app
 ```bash
-php -S 0.0.0.0:8080 -t public public/index.php
+php -S localhost:8080 -t public public/index.php
 ```
 To test, you can navigate to `http://localhost:8080/docs`. If the API documentation appears, it is working properly.
 
