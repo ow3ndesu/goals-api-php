@@ -32,3 +32,41 @@ Built with **Slim 4**, **PHP**, and **MySQL**, featuring JWT authentication, inp
 git clone https://github.com/ow3ndesu/goals-api-php.git
 cd goals-api-php
 composer install
+```
+
+### 2. Configure Environment
+```bash
+cp .env.example .env
+```
+And please reach out if there is anything unclear in this part.
+
+### 3. Run seeder
+```bash
+php -S 0.0.0.0:8080 .\seeder.php
+```
+This will output the credentials of the seeded account (**Already** included in postman collection).
+
+### 4. Run the app
+```bash
+php -S 0.0.0.0:8080 -t public public/index.php
+```
+To test, you can navigate to `http://localhost:8080/docs`. If the API documentation appears, it is working properly.
+
+### 5. Import the Postman Collection
+There is a button under **My Workspace** inside Postman that lets you import the exported collection.json. Proceed with the import.
+
+---
+
+## ▶️ Run
+
+### 1. Auth - Login
+Hit `/auth/login` under **Auth** using the provided seeded account. After a successful authentication, copy the returned token.
+
+### 2. Authorization
+Under **Auth** folder, you'll have to paste the token under **Bearer Token** Auth Type to Authenticate all protected routes of the API.
+
+---
+
+## 📝 Notes
+- Please refer to `http://localhost:8080/docs` and **Collection Documentation** to fully understand how to hit all endpoints.
+- Docker capabilities will be added below this line.
