@@ -40,19 +40,22 @@ cp .env.example .env
 ```
 And please reach out if there is anything unclear in this part.
 
-### 3. Run seeder
+### 3. Import Database
+Using `db.sql` create the database and the tables necessary. Process may vary in what MySQL UI you are using.
+
+### 4. Run seeder
 ```bash
 php -S 0.0.0.0:8080 .\seeder.php
 ```
 This will output the credentials of the seeded account (**Already** included in postman collection).
 
-### 4. Run the app
+### 5. Run the app
 ```bash
 php -S 0.0.0.0:8080 -t public public/index.php
 ```
 To test, you can navigate to `http://localhost:8080/docs`. If the API documentation appears, it is working properly.
 
-### 5. Import the Postman Collection
+### 6. Import the Postman Collection
 There is a button under **My Workspace** inside Postman that lets you import the exported collection.json. Proceed with the import.
 
 ---
