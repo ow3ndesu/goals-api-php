@@ -24,12 +24,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/auth/login",
-							"protocol": "http",
+							"raw": "{{API_URL}}/auth/login",
 							"host": [
-								"localhost"
+								"{{API_URL}}"
 							],
-							"port": "8080",
 							"path": [
 								"auth",
 								"login"
@@ -53,12 +51,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/auth/refresh",
-							"protocol": "http",
+							"raw": "{{API_URL}}/auth/refresh",
 							"host": [
-								"localhost"
+								"{{API_URL}}"
 							],
-							"port": "8080",
 							"path": [
 								"auth",
 								"refresh"
@@ -87,12 +83,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/goals",
-							"protocol": "http",
+							"raw": "{{API_URL}}/goals",
 							"host": [
-								"localhost"
+								"{{API_URL}}"
 							],
-							"port": "8080",
 							"path": [
 								"goals"
 							]
@@ -106,12 +100,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/goals",
-							"protocol": "http",
+							"raw": "{{API_URL}}/goals",
 							"host": [
-								"localhost"
+								"{{API_URL}}"
 							],
-							"port": "8080",
 							"path": [
 								"goals"
 							]
@@ -137,12 +129,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/goals/3",
-							"protocol": "http",
+							"raw": "{{API_URL}}/goals/3",
 							"host": [
-								"localhost"
+								"{{API_URL}}"
 							],
-							"port": "8080",
 							"path": [
 								"goals",
 								"3"
@@ -166,12 +156,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/goals/3",
-							"protocol": "http",
+							"raw": "{{API_URL}}/goals/3",
 							"host": [
-								"localhost"
+								"{{API_URL}}"
 							],
-							"port": "8080",
 							"path": [
 								"goals",
 								"3"
@@ -186,12 +174,10 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/goals/3",
-							"protocol": "http",
+							"raw": "{{API_URL}}/goals/3",
 							"host": [
-								"localhost"
+								"{{API_URL}}"
 							],
-							"port": "8080",
 							"path": [
 								"goals",
 								"3"
@@ -206,7 +192,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0IiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdCIsImlhdCI6MTc1OTI4NDI4MywibmJmIjoxNzU5Mjg0MjgzLCJleHAiOjE3NTkyODUxODMsInN1YiI6IjEiLCJlbWFpbCI6ImRlbW9AZXhhbXBsZS5jb20ifQ.N-lIggWmAllx0flHiJBfZ7dpcxMLhQLIE0efV9Dg0Y8",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0IiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdCIsImlhdCI6MTc1OTI5MTEwMSwibmJmIjoxNzU5MjkxMTAxLCJleHAiOjE3NTkyOTIwMDEsInN1YiI6IjEiLCJlbWFpbCI6ImRlbW9AZXhhbXBsZS5jb20ifQ.M0-2lXfrcza52aARzb5eNJZJBIfvXEr_TX6v-VjnPhw",
 						"type": "string"
 					}
 				]
@@ -235,6 +221,36 @@
 					}
 				}
 			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "API_URL",
+			"value": ""
 		}
 	]
 }
