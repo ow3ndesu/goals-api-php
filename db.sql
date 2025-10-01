@@ -32,12 +32,12 @@ CREATE TABLE refresh_tokens (
   UNIQUE(token)
 );
 
--- Login attempts for basic rate limiting
-CREATE TABLE login_attempts (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  ip VARCHAR(45) NOT NULL,
-  attempts INT NOT NULL DEFAULT 0,
-  last_attempt DATETIME NOT NULL,
-  blocked_until DATETIME NULL,
-  INDEX (ip)
+-- Rate limits for basic rate limiting
+CREATE TABLE IF NOT EXISTS rate_limits (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ip VARCHAR(45) NOT NULL,
+    endpoint VARCHAR(100) NOT NULL,
+    attempts INT NOT NULL DEFAULT 0,
+    last_attempt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY ip_endpoint (ip, endpoint)
 );
