@@ -66,7 +66,7 @@ There is a button under **My Workspace** inside Postman that lets you import the
 Hit `/auth/login` under **Auth** using the provided seeded account. After a successful authentication, copy the returned token.
 
 ### 2. Authorization
-Under **Auth** folder, you'll have to paste the token under **Bearer Token** Auth Type to Authenticate all protected routes of the API.
+Under **Goals** folder, you'll have to paste the token under **Bearer Token** Auth Type to Authenticate all protected routes of the API.
 
 ---
 
