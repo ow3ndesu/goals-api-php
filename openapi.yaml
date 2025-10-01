@@ -1,0 +1,265 @@
+openapi: 3.0.3
+info:
+    title: Goals API
+    version: 1.0.0
+    description: API for managing financial goals (authenticated users only).
+
+servers:
+    - url: http://localhost:8080
+
+tags:
+    - name: Auth
+      description: Authentication and token management
+    - name: Goals
+      description: CRUD operations for financial goals
+
+paths:
+    /auth/login:
+        post:
+            tags:
+                - Auth
+            summary: User login
+            description: Authenticate with email and password.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - email
+                                - password
+                            properties:
+                                email:
+                                    type: string
+                                    format: email
+                                password:
+                                    type: string
+                                    format: password
+            responses:
+                "200":
+                    description: Login successful
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    access_token:
+                                        type: string
+                                    refresh_token:
+                                        type: string
+                                    token_type:
+                                        type: string
+                                        example: bearer
+                                    expires_in:
+                                        type: integer
+                                        example: 3600
+                "401":
+                    description: Invalid credentials
+                "429":
+                    description: Too many login attempts (rate limited)
+
+    /auth/refresh:
+        post:
+            tags:
+                - Auth
+            summary: Refresh access token
+            description: Exchange a valid refresh token for a new short-lived access token.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - refresh_token
+                            properties:
+                                refresh_token:
+                                    type: string
+            responses:
+                "200":
+                    description: Token refreshed successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    access_token:
+                                        type: string
+                                    refresh_token:
+                                        type: string
+                                    token_type:
+                                        type: string
+                                        example: bearer
+                                    expires_in:
+                                        type: integer
+                                        example: 3600
+                "401":
+                    description: Invalid or expired refresh token
+
+    /goals:
+        get:
+            tags:
+                - Goals
+            summary: List goals
+            security:
+                - bearerAuth: []
+            parameters:
+                - in: query
+                  name: page
+                  schema:
+                      type: integer
+                      default: 1
+                  description: Page number for pagination
+            responses:
+                "200":
+                    description: List of goals
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        type: array
+                                        items:
+                                            $ref: "#/components/schemas/Goal"
+                                    pagination:
+                                        type: object
+                                        properties:
+                                            current_page:
+                                                type: integer
+                                            total_pages:
+                                                type: integer
+        post:
+            tags:
+                - Goals
+            summary: Create goal
+            security:
+                - bearerAuth: []
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/GoalInput"
+            responses:
+                "201":
+                    description: Goal created
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Goal"
+                "400":
+                    description: Validation failed
+
+    /goals/{id}:
+        get:
+            tags:
+                - Goals
+            summary: Get goal by ID
+            security:
+                - bearerAuth: []
+            parameters:
+                - in: path
+                  name: id
+                  schema:
+                      type: integer
+                  required: true
+            responses:
+                "200":
+                    description: Goal object
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Goal"
+                "404":
+                    description: Goal not found
+        put:
+            tags:
+                - Goals
+            summary: Update goal
+            security:
+                - bearerAuth: []
+            parameters:
+                - in: path
+                  name: id
+                  schema:
+                      type: integer
+                  required: true
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/GoalInput"
+            responses:
+                "200":
+                    description: Goal updated
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Goal"
+                "404":
+                    description: Goal not found
+        delete:
+            tags:
+                - Goals
+            summary: Delete goal
+            security:
+                - bearerAuth: []
+            parameters:
+                - in: path
+                  name: id
+                  schema:
+                      type: integer
+                  required: true
+            responses:
+                "204":
+                    description: Goal deleted successfully
+                "404":
+                    description: Goal not found
+
+components:
+    securitySchemes:
+        bearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT
+
+    schemas:
+        Goal:
+            type: object
+            properties:
+                id:
+                    type: integer
+                user_id:
+                    type: integer
+                title:
+                    type: string
+                target_amount:
+                    type: number
+                    format: float
+                saved_amount:
+                    type: number
+                    format: float
+                created_at:
+                    type: string
+                    format: date-time
+                updated_at:
+                    type: string
+                    format: date-time
+        GoalInput:
+            type: object
+            required:
+                - title
+                - target_amount
+            properties:
+                title:
+                    type: string
+                target_amount:
+                    type: number
+                    minimum: 0
+                saved_amount:
+                    type: number
+                    minimum: 0
+                    default: 0
