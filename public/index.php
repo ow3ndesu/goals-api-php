@@ -2,8 +2,9 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use Slim\Factory\AppFactory;
-use App\AuthMiddleware;
 use Dotenv\Dotenv;
+
+use App\Middleware\AuthMiddleware;
 
 // Load env
 $dotenv = Dotenv::createImmutable(__DIR__ . "/..");

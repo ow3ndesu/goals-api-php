@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Services;
+
+use PDO;
+
+use App\Repositories\AuthRepository;
+
+class AuthService {
+    private AuthRepository $repo;
+    public function __construct(PDO $pdo) {
+        $this->repo = new AuthRepository($pdo);
+    }
+
+    public function login(array $body, string $ip): ?array {
+        return $this->repo->login($body, $ip);
+    }
+
+    public function refreshToken(array $body): ?array {
+        return $this->repo->refreshToken($body);
+    }
+}

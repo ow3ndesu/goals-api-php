@@ -1,12 +1,14 @@
 <?php
 
-namespace App;
+namespace App\Middleware;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as Handler;
 use Psr\Http\Message\ResponseInterface as Response;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+
+use App\Helpers;
 
 class AuthMiddleware
 {

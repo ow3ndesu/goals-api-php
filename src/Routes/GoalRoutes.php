@@ -5,64 +5,49 @@ use Slim\Psr7\Response;
 use App\DB;
 use App\Helpers;
 
+use App\Services\GoalService;
+
 return function (App $app, $authMiddleware) {
 
     // GET /goals
     $app->get('/goals', function (Request $req, Response $resp) {
         $user = $req->getAttribute('user');
         $query = $req->getQueryParams();
-        $page = max(1, intval($query['page'] ?? 1));
-        $size = min(100, max(1, intval($query['page_size'] ?? 10)));
-        $offset = ($page - 1) * $size;
+        
+        $service = new GoalService(DB::get());
+        $goals = $service->getGoals($user, $query);
 
-        $pdo = DB::get();
-        $stmt = $pdo->prepare("SELECT SQL_CALC_FOUND_ROWS id,title,target_amount,saved_amount,created_at,updated_at
-                               FROM goals WHERE user_id=:uid ORDER BY created_at DESC LIMIT :limit OFFSET :offset");
-        $stmt->bindValue(':uid', $user['id'], PDO::PARAM_INT);
-        $stmt->bindValue(':limit', $size, PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-        $stmt->execute();
-        $goals = $stmt->fetchAll();
-        $total = DB::get()->query("SELECT FOUND_ROWS() total")->fetch()['total'];
-
-        return Helpers::jsonSuccess($resp, [
-            'data'=>$goals,
-            'pagination'=>['page'=>$page,'page_size'=>$size,'total'=>(int)$total]
-        ]);
+        return Helpers::jsonSuccess($resp, $goals);
     })->add($authMiddleware);
 
     // POST /goals
     $app->post('/goals', function (Request $req, Response $resp) {
         $user = $req->getAttribute('user');
-        $b = $req->getParsedBody();
+        $body = $req->getParsedBody();
 
-        $title = trim($b['title'] ?? '');
-        $target = $b['target_amount'] ?? null;
-        $saved  = $b['saved_amount'] ?? 0;
+        $service = new GoalService(DB::get());
+        $serviceResponse = $service->addGoal($user, $body);
 
-        $errors=[];
-        if ($title==='') $errors['title']='Required';
-        if (!is_numeric($target)||$target<0) $errors['target_amount']='Non-negative number required';
-        if (!is_numeric($saved)||$saved<0) $errors['saved_amount']='Non-negative number required';
-        if ($errors) return Helpers::jsonError($resp,'Validation failed',422,$errors);
+        if (isset($serviceResponse['error']) && $serviceResponse['error']) {
+            return Helpers::jsonError($resp, $serviceResponse['message'], $serviceResponse['code']);
+        }
 
-        $pdo=DB::get();
-        $stmt=$pdo->prepare("INSERT INTO goals (user_id,title,target_amount,saved_amount) VALUES (:u,:t,:ta,:sa)");
-        $stmt->execute([':u'=>$user['id'],':t'=>$title,':ta'=>$target,':sa'=>$saved]);
-        $id=$pdo->lastInsertId();
-        $goal=$pdo->query("SELECT id,title,target_amount,saved_amount,created_at,updated_at FROM goals WHERE id=$id")->fetch();
-
-        return Helpers::jsonSuccess($resp,['goal'=>$goal],201);
+        return Helpers::jsonSuccess($resp, $serviceResponse, 201);
     })->add($authMiddleware);
 
     // GET /goals/{id}
-    $app->get('/goals/{id}', function (Request $req, Response $resp, $a) {
-        $user=$req->getAttribute('user'); $id=(int)$a['id'];
-        $pdo=DB::get();
-        $st=$pdo->prepare("SELECT id,title,target_amount,saved_amount,created_at,updated_at FROM goals WHERE id=:id AND user_id=:u");
-        $st->execute([':id'=>$id,':u'=>$user['id']]); $goal=$st->fetch();
-        if(!$goal) return Helpers::jsonError($resp,'Goal not found',404);
-        return Helpers::jsonSuccess($resp,['goal'=>$goal]);
+    $app->get('/goals/{id}', function (Request $req, Response $resp, $param) {
+        $user = $req->getAttribute('user'); 
+        $id = (int)$param['id'];
+        
+        $service = new GoalService(DB::get());
+        $serviceResponse = $service->getGoal($user, $id);
+
+        if (isset($serviceResponse['error']) && $serviceResponse['error']) {
+            return Helpers::jsonError($resp, $serviceResponse['message'], $serviceResponse['code']);
+        }
+
+        return Helpers::jsonSuccess($resp, $serviceResponse);
     })->add($authMiddleware);
 
     // PUT /goals/{id}
@@ -92,13 +77,18 @@ return function (App $app, $authMiddleware) {
     })->add($authMiddleware);
 
     // DELETE /goals/{id}
-    $app->delete('/goals/{id}', function (Request $req, Response $resp, $a) {
-        $user=$req->getAttribute('user'); $id=(int)$a['id'];
-        $pdo=DB::get();
-        $st=$pdo->prepare("DELETE FROM goals WHERE id=:id AND user_id=:u");
-        $st->execute([':id'=>$id,':u'=>$user['id']]);
-        if(!$st->rowCount()) return Helpers::jsonError($resp,'Not found',404);
-        return Helpers::jsonSuccess($resp,['message'=>'Deleted']);
+    $app->delete('/goals/{id}', function (Request $req, Response $resp, $param) {
+        $user = $req->getAttribute('user'); 
+        $id = (int)$param['id'];
+        
+        $service = new GoalService(DB::get());
+        $serviceResponse = $service->deleteGoal($user, $id);
+
+        if (isset($serviceResponse['error']) && $serviceResponse['error']) {
+            return Helpers::jsonError($resp, $serviceResponse['message'], $serviceResponse['code']);
+        }
+
+        return Helpers::jsonSuccess($resp, $serviceResponse);
     })->add($authMiddleware);
 
 };
