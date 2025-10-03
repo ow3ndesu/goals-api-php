@@ -22,10 +22,16 @@ class TestCase extends BaseTestCase
     protected function createRequest(
         string $method,
         string $uri,
+        array $query = [],
         array $headers = [],
-        array $body = null
+        array $body = []
     ) {
         $requestFactory = new ServerRequestFactory();
+
+        if (!empty($query)) {
+            $uri .= '?' . http_build_query($query);
+        }
+
         $request = $requestFactory->createServerRequest($method, $uri);
 
         foreach ($headers as $name => $value) {
@@ -47,6 +53,10 @@ class TestCase extends BaseTestCase
      */
     protected function parseJson($response): array
     {
+        if (is_array($response)) {
+            return $response;
+        }
+
         $body = (string) $response->getBody();
         return json_decode($body, true) ?? [];
     }

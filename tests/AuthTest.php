@@ -8,7 +8,7 @@ class AuthTest extends TestCase
 {
     public function testLoginWithInvalidCredentials(): void
     {
-        $req = $this->createRequest('POST', '/auth/login', [], [
+        $req = $this->createRequest('POST', '/auth/login', body: [
             'email' => 'bad@example.com',
             'password' => 'wrong'
         ]);
@@ -20,7 +20,7 @@ class AuthTest extends TestCase
 
     public function testLoginWithValidCredentials(): void
     {
-        $req = $this->createRequest('POST', '/auth/login', [], [
+        $req = $this->createRequest('POST', '/auth/login', body: [
             'email' => 'demo@example.com',
             'password' => 'password123'
         ]);
