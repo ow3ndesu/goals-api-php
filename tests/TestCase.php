@@ -13,7 +13,7 @@ class TestCase extends BaseTestCase
 
     protected function setUp(): void
     {
-        $this->app = (require __DIR__ . '/../src/Test.php');
+        $this->app = (require __DIR__ . '/../src/App.php');
     }
 
     /**
