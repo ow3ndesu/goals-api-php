@@ -45,7 +45,7 @@ Using `db.sql` create the database and the tables necessary. Process may vary in
 
 ### 4. Run seeder
 ```bash
-php -S localhost:8080 .\seeder.php
+composer seed
 ```
 This will output the credentials of the seeded account (**Already** included in postman collection).
 
