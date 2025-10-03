@@ -19,7 +19,8 @@
   },
   "scripts": {
     "test": "phpunit",
-    "seed": "php seeder.php"
+    "seed": "php seeder.php",
+    "run": "php -S localhost:8080 -t public public/index.php"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.6"
