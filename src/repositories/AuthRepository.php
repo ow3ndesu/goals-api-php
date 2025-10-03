@@ -8,9 +8,19 @@ use DateInterval;
 
 use Firebase\JWT\JWT;
 
+use App\Repositories\RefreshTokenRepository;
+use App\Repositories\UserRepository;
+
 class AuthRepository {
     private PDO $pdo;
-    public function __construct(PDO $pdo) { $this->pdo = $pdo; }
+    private RefreshTokenRepository $repo;
+    private UserRepository $users;
+    
+    public function __construct(PDO $pdo) {
+        $this->pdo = $pdo;
+        $this->repo = new RefreshTokenRepository($pdo);
+        $this->users = new UserRepository($pdo);
+    }
 
     function generateAccessToken(array $user) {
         $now = time();
@@ -126,7 +136,7 @@ class AuthRepository {
     }
 
     public function refreshToken(array $body): ?array {
-        $refresh = $body['refresh_token'] ?? '';
+        $refresh = $body['refresh_token'] ?? null;
         
         if (!$refresh) {
             return [
@@ -166,6 +176,45 @@ class AuthRepository {
 
         $user = ['id' => $row['user_id'], 'email' => $row['email']];
         $access = $this->generateAccessToken($user);
+
+        return [
+            'access_token' => $access,
+            'token_type' => 'Bearer',
+            'expires_in' => intval($_ENV['ACCESS_TOKEN_TTL'] ?: 900),
+            'refresh_token' => $newRefresh
+        ];
+    }
+
+    public function rotateRefreshToken(array $body): ?array {
+        $refresh = $body['refresh_token'] ?? null;
+
+        if (!$refresh) {
+            return [
+                'error' => true,
+                'code' => 400,
+                'message' => 'refresh_token required',
+            ];
+        }
+
+        $hashed = hash('sha256', $refresh);
+        $row = $this->repo->findValidToken($hashed);
+        if (!$row) {
+            return [
+                'error' => true,
+                'code' => 400,
+                'message' => 'Not a valid refresh token',
+            ];
+        }
+
+        // Invalidate old
+        $this->repo->deleteToken($hashed);
+
+        // Generate new pair
+        $user = $this->users->findById($row['user_id']);
+        $access = $this->generateAccessToken($user);
+        $newRefresh = bin2hex(random_bytes(32));
+
+        $this->repo->storeToken($user['id'], $newRefresh);
 
         return [
             'access_token' => $access,

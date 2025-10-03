@@ -29,7 +29,7 @@ return function (App $app, $authMiddleware) {
         $body = $req->getParsedBody();
         
         $service = new AuthService(DB::get());
-        $serviceResponse = $service->refreshToken($body);
+        $serviceResponse = $service->rotateRefreshToken($body);
 
         if (isset($serviceResponse['error']) && $serviceResponse['error']) {
             return Helpers::jsonError($resp, $serviceResponse['message'], $serviceResponse['code']);

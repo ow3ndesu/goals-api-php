@@ -19,4 +19,8 @@ class AuthService {
     public function refreshToken(array $body): ?array {
         return $this->repo->refreshToken($body);
     }
+
+    public function rotateRefreshToken(array $body): ?array {
+        return $this->repo->rotateRefreshToken($body);
+    }
 }
