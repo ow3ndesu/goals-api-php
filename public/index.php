@@ -5,6 +5,7 @@ use Slim\Factory\AppFactory;
 use Dotenv\Dotenv;
 
 use App\Middleware\AuthMiddleware;
+use App\Middleware\ErrorHandlerMiddleware;
 
 // Load env
 $dotenv = Dotenv::createImmutable(__DIR__ . "/..");
@@ -15,6 +16,7 @@ $app = AppFactory::create();
 $app->addBodyParsingMiddleware();
 $app->addRoutingMiddleware();
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
+$errorMiddleware->setDefaultErrorHandler(new ErrorHandlerMiddleware());
 
 // Middleware instance
 $authMiddleware = new AuthMiddleware();
