@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "70eddfd9-85c9-40cd-a093-d0e9f562e097",
+		"_postman_id": "3570519d-62b9-440d-a854-4efe318f6e92",
 		"name": "Goals API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "32793498"
@@ -129,13 +129,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{API_URL}}/goals/3",
+							"raw": "{{API_URL}}/goals/1",
 							"host": [
 								"{{API_URL}}"
 							],
 							"path": [
 								"goals",
-								"3"
+								"1"
 							]
 						}
 					},
@@ -156,13 +156,40 @@
 							}
 						},
 						"url": {
-							"raw": "{{API_URL}}/goals/3",
+							"raw": "{{API_URL}}/goals/1",
 							"host": [
 								"{{API_URL}}"
 							],
 							"path": [
 								"goals",
-								"3"
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Goals - Patch Goal",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Vacation fundsss\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/goals/1",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"goals",
+								"1"
 							]
 						}
 					},
@@ -174,13 +201,13 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{API_URL}}/goals/3",
+							"raw": "{{API_URL}}/goals/1",
 							"host": [
 								"{{API_URL}}"
 							],
 							"path": [
 								"goals",
-								"3"
+								"1"
 							]
 						}
 					},
@@ -192,7 +219,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0IiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdCIsImlhdCI6MTc1OTI5MTEwMSwibmJmIjoxNzU5MjkxMTAxLCJleHAiOjE3NTkyOTIwMDEsInN1YiI6IjEiLCJlbWFpbCI6ImRlbW9AZXhhbXBsZS5jb20ifQ.M0-2lXfrcza52aARzb5eNJZJBIfvXEr_TX6v-VjnPhw",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0IiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdCIsImlhdCI6MTc1OTQ2ODYyNywibmJmIjoxNzU5NDY4NjI3LCJleHAiOjE3NTk0Njk1MjcsInN1YiI6IjEiLCJlbWFpbCI6ImRlbW9AZXhhbXBsZS5jb20ifQ.OlBloCOwiDDIlldLtE0L9CATvKkcAED_s6fQPD73p4I",
 						"type": "string"
 					}
 				]

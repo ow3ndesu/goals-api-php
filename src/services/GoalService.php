@@ -24,6 +24,26 @@ class GoalService {
         return $this->repo->getGoal($user, $id);
     }
 
+    public function updateGoal(array $user, array $body, int $id): ?array {
+        return $this->repo->updateGoal($user, $body, $id);
+    }
+
+    public function updateGoalPartially(array $user, array $body, int $id): ?array {
+        $allowed = ['title', 'target_amount', 'saved_amount'];
+        $fields = array_intersect_key($body, array_flip($allowed));
+
+        if (isset($fields['saved_amount'], $fields['target_amount']) &&
+            $fields['saved_amount'] > $fields['target_amount']) {
+            return [
+                'error' => true,
+                'code' => 422,
+                'message' => 'Validation failed',
+            ];
+        }
+
+        return $this->repo->updateGoalPartially($user, $fields, $id);
+    }
+
     public function deleteGoal(array $user, int $id): ?array {
         return $this->repo->deleteGoal($user, $id);
     }

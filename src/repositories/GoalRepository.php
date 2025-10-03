@@ -52,7 +52,7 @@ class GoalRepository {
             ];
         }
 
-        $stmt = $this->pdo->prepare("INSERT INTO goals (user_id,title,target_amount,saved_amount) VALUES (:u,:t,:ta,:sa)");
+        $stmt = $this->pdo->prepare("INSERT INTO goals (user_id, title, target_amount, saved_amount) VALUES (:u, :t, :ta, :sa)");
         $stmt->execute([':u' => $user['id'], ':t' => $title, ':ta' => $target, ':sa' => $saved]);
         $id = $this->pdo->lastInsertId();
         $goal = $this->pdo->query("SELECT id, title, target_amount, saved_amount, created_at, updated_at FROM goals WHERE id = $id")->fetch();
@@ -99,10 +99,10 @@ class GoalRepository {
             ];
         }
 
-        $chk=$this->pdo->prepare("SELECT id FROM goals WHERE id=:id AND user_id=:u");
-        $chk->execute([':id'=>$id,':u'=>$user['id']]);
+        $check=$this->pdo->prepare("SELECT id FROM goals WHERE id=:id AND user_id=:u");
+        $check->execute([':id' => $id,':u' => $user['id']]);
         
-        if (!$chk->fetch()) {
+        if (!$check->fetch()) {
             return [
                 'error' => true,
                 'code' => 404,
@@ -114,17 +114,17 @@ class GoalRepository {
         $p = [':id' => $id];
 
         if ($title !== null) {
-            $fields[] = "title=:t";
+            $fields[] = "title = :t";
             $p[':t'] = trim($title);
         }
 
         if ($target !== null) {
-            $fields[] = "target_amount=:ta";
+            $fields[] = "target_amount = :ta";
             $p[':ta'] = $target;
         }
 
         if ($saved !== null) {
-            $fields[] = "saved_amount=:sa";
+            $fields[] = "saved_amount = :sa";
             $p[':sa'] = $saved;
         }
 
@@ -136,7 +136,50 @@ class GoalRepository {
             ];
         }
 
-        $this->pdo->prepare("UPDATE goals SET ".implode(',',$fields)." WHERE id = :id")->execute($p);
+        $this->pdo->prepare("UPDATE goals SET ". implode(',',$fields). " WHERE id = :id")->execute($p);
+        $goal = $this->pdo->query("SELECT id, title, target_amount, saved_amount, created_at, updated_at FROM goals WHERE id = $id")->fetch();
+        
+        return [
+            'goal' => $goal
+        ];
+    }
+
+    public function updateGoalPartially(array $user, array $fields, $id): ?array {
+        if (empty($fields)) {
+            return [
+                'error' => true,
+                'code' => 422,
+                'message' => 'Validation failed',
+            ];
+        }
+
+        $check = $this->pdo->prepare("SELECT id FROM goals WHERE id = :id AND user_id = :u");
+        $check->execute([':id' => $id, ':u' => $user['id']]);
+        
+        if (!$check->fetch()) {
+            return [
+                'error' => true,
+                'code' => 404,
+                'message' => 'Not found',
+            ];
+        }
+
+        $set = implode(", ", array_map(fn($f) => "$f = :$f", array_keys($fields)));
+        $fields['id'] = $id;
+        $fields['uid'] = $user['id'];
+
+        $sql = "UPDATE goals SET $set WHERE id = :id AND user_id = :uid";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($fields);
+
+        if ($stmt->rowCount() === 0) {
+            return [
+                'error' => true,
+                'code' => 404,
+                'message' => 'Nothing is updated',
+            ];
+        }
+        
         $goal = $this->pdo->query("SELECT id, title, target_amount, saved_amount, created_at, updated_at FROM goals WHERE id = $id")->fetch();
         
         return [

@@ -51,29 +51,34 @@ return function (App $app, $authMiddleware) {
     })->add($authMiddleware);
 
     // PUT /goals/{id}
-    $app->put('/goals/{id}', function (Request $req, Response $resp, $a) {
-        $user=$req->getAttribute('user'); $id=(int)$a['id']; $b=$req->getParsedBody();
-        $title=$b['title']??null; $target=$b['target_amount']??null; $saved=$b['saved_amount']??null;
+    $app->put('/goals/{id}', function (Request $req, Response $resp, $param) {
+        $user = $req->getAttribute('user'); 
+        $id = (int)$param['id']; 
+        $body = $req->getParsedBody();
 
-        $errs=[];
-        if($title!==null && trim($title)==='') $errs['title']='Cannot be empty';
-        if($target!==null && (!is_numeric($target)||$target<0)) $errs['target_amount']='Must be non-negative';
-        if($saved!==null && (!is_numeric($saved)||$saved<0)) $errs['saved_amount']='Must be non-negative';
-        if($errs) return Helpers::jsonError($resp,'Validation failed',422,$errs);
+        $service = new GoalService(DB::get());
+        $serviceResponse = $service->updateGoal($user, $body, $id);
 
-        $pdo=DB::get();
-        $chk=$pdo->prepare("SELECT id FROM goals WHERE id=:id AND user_id=:u");
-        $chk->execute([':id'=>$id,':u'=>$user['id']]); if(!$chk->fetch()) return Helpers::jsonError($resp,'Not found',404);
+        if (isset($serviceResponse['error']) && $serviceResponse['error']) {
+            return Helpers::jsonError($resp, $serviceResponse['message'], $serviceResponse['code']);
+        }
 
-        $fields=[];$p=[':id'=>$id];
-        if($title!==null){$fields[]="title=:t";$p[':t']=trim($title);}
-        if($target!==null){$fields[]="target_amount=:ta";$p[':ta']=$target;}
-        if($saved!==null){$fields[]="saved_amount=:sa";$p[':sa']=$saved;}
-        if(!$fields) return Helpers::jsonError($resp,'No fields',400);
+        return Helpers::jsonSuccess($resp, $serviceResponse);
+    })->add($authMiddleware);
 
-        $pdo->prepare("UPDATE goals SET ".implode(',',$fields)." WHERE id=:id")->execute($p);
-        $g=$pdo->query("SELECT id,title,target_amount,saved_amount,created_at,updated_at FROM goals WHERE id=$id")->fetch();
-        return Helpers::jsonSuccess($resp,['goal'=>$g]);
+    $app->patch('/goals/{id}', function (Request $req, Response $resp, $param) {
+        $user = $req->getAttribute('user'); 
+        $id = (int)$param['id']; 
+        $body = $req->getParsedBody();
+
+        $service = new GoalService(DB::get());
+        $serviceResponse = $service->updateGoalPartially($user, $body, $id);
+
+        if (isset($serviceResponse['error']) && $serviceResponse['error']) {
+            return Helpers::jsonError($resp, $serviceResponse['message'], $serviceResponse['code']);
+        }
+
+        return Helpers::jsonSuccess($resp, $serviceResponse);
     })->add($authMiddleware);
 
     // DELETE /goals/{id}
