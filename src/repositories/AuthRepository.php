@@ -135,56 +135,6 @@ class AuthRepository {
         ];
     }
 
-    public function refreshToken(array $body): ?array {
-        $refresh = $body['refresh_token'] ?? null;
-        
-        if (!$refresh) {
-            return [
-                'error' => true,
-                'code' => 400,
-                'message' => 'refresh_token required',
-            ];
-        }
-
-        $hashed = hash('sha256', $refresh);
-        $stmt = $this->pdo->prepare("SELECT rt.*, u.id as uid, u.email FROM refresh_tokens rt JOIN users u ON u.id = rt.user_id WHERE rt.token = :tok");
-        $stmt->execute([':tok' => $hashed]);
-        $row = $stmt->fetch();
-
-        if (!$row) {
-            return [
-                'error' => true,
-                'code' => 401,
-                'message' => 'Invalid refresh token',
-            ];
-        }
-
-        if (new DateTime($row['expires_at']) < new DateTime()) {
-            return [
-                'error' => true,
-                'code' => 401,
-                'message' => 'Refresh token expired',
-            ];
-        }
-
-        // Rotate token
-        $this->pdo->prepare("DELETE FROM refresh_tokens WHERE id = :id")->execute([':id' => $row['id']]);
-        $newRefresh = bin2hex(random_bytes(32));
-        $expiresAt = (new DateTime())->add(new DateInterval('P14D'))->format('Y-m-d H:i:s');
-        $this->pdo->prepare("INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES (:uid, :token, :exp)")
-            ->execute([':uid'=>$row['user_id'], ':token'=>hash('sha256',$newRefresh), ':exp'=>$expiresAt]);
-
-        $user = ['id' => $row['user_id'], 'email' => $row['email']];
-        $access = $this->generateAccessToken($user);
-
-        return [
-            'access_token' => $access,
-            'token_type' => 'Bearer',
-            'expires_in' => intval($_ENV['ACCESS_TOKEN_TTL'] ?: 900),
-            'refresh_token' => $newRefresh
-        ];
-    }
-
     public function rotateRefreshToken(array $body): ?array {
         $refresh = $body['refresh_token'] ?? null;
 
