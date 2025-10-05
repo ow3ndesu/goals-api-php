@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "3570519d-62b9-440d-a854-4efe318f6e92",
+		"_postman_id": "a7067dd1-8669-47cb-ada8-d3cca6a472f1",
 		"name": "Goals API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "32793498"
@@ -35,33 +35,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "Auth - Refresh Token",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"refresh_token\": \"682aa55d2955875a1e185269e39156cd7938640c5ca311984cc6b0e110107513\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{API_URL}}/auth/refresh",
-							"host": [
-								"{{API_URL}}"
-							],
-							"path": [
-								"auth",
-								"refresh"
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		},
@@ -72,7 +45,13 @@
 					"name": "Goals - Post Goal",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "X-Refresh-Token",
+								"value": "{{REFRESH_TOKEN}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"title\": \"Retirement funds\",\r\n    \"target_amount\": 100000,\r\n    \"saved_amount\": 5000\r\n}",
@@ -98,7 +77,48 @@
 					"name": "Goals - Get Goals",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"type": "text"
+							},
+							{
+								"key": "Postman-Token",
+								"value": "<calculated when request is sent>",
+								"type": "text"
+							},
+							{
+								"key": "Host",
+								"value": "<calculated when request is sent>",
+								"type": "text"
+							},
+							{
+								"key": "User-Agent",
+								"value": "PostmanRuntime/7.39.1",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Encoding",
+								"value": "gzip, deflate, br",
+								"type": "text"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive",
+								"type": "text"
+							},
+							{
+								"key": "X-Refresh-Token",
+								"value": "{{REFRESH_TOKEN}}",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{API_URL}}/goals",
 							"host": [
@@ -118,7 +138,48 @@
 					},
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"type": "text"
+							},
+							{
+								"key": "Postman-Token",
+								"value": "<calculated when request is sent>",
+								"type": "text"
+							},
+							{
+								"key": "Host",
+								"value": "<calculated when request is sent>",
+								"type": "text"
+							},
+							{
+								"key": "User-Agent",
+								"value": "PostmanRuntime/7.39.1",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Encoding",
+								"value": "gzip, deflate, br",
+								"type": "text"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive",
+								"type": "text"
+							},
+							{
+								"key": "X-Refresh-Token",
+								"value": "{{REFRESH_TOKEN}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "",
@@ -145,37 +206,16 @@
 					"name": "Goals - Put Goal",
 					"request": {
 						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"Vacation funds\",\r\n    \"target_amount\": 10000,\r\n    \"saved_amount\": 500\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
+						"header": [
+							{
+								"key": "X-Refresh-Token",
+								"value": "{{REFRESH_TOKEN}}",
+								"type": "text"
 							}
-						},
-						"url": {
-							"raw": "{{API_URL}}/goals/1",
-							"host": [
-								"{{API_URL}}"
-							],
-							"path": [
-								"goals",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Goals - Patch Goal",
-					"request": {
-						"method": "PATCH",
-						"header": [],
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"Vacation fundsss\"\r\n}",
+							"raw": "{\r\n    \"title\": \"Retirement fundssss\",\r\n    \"target_amount\": 100000,\r\n    \"saved_amount\": 5000\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -199,7 +239,48 @@
 					"name": "Goals - Delete Goal",
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"type": "text"
+							},
+							{
+								"key": "Postman-Token",
+								"value": "<calculated when request is sent>",
+								"type": "text"
+							},
+							{
+								"key": "Host",
+								"value": "<calculated when request is sent>",
+								"type": "text"
+							},
+							{
+								"key": "User-Agent",
+								"value": "PostmanRuntime/7.39.1",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Encoding",
+								"value": "gzip, deflate, br",
+								"type": "text"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive",
+								"type": "text"
+							},
+							{
+								"key": "X-Refresh-Token",
+								"value": "{{REFRESH_TOKEN}}",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{API_URL}}/goals/1",
 							"host": [
@@ -219,7 +300,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0IiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdCIsImlhdCI6MTc1OTQ2ODYyNywibmJmIjoxNzU5NDY4NjI3LCJleHAiOjE3NTk0Njk1MjcsInN1YiI6IjEiLCJlbWFpbCI6ImRlbW9AZXhhbXBsZS5jb20ifQ.OlBloCOwiDDIlldLtE0L9CATvKkcAED_s6fQPD73p4I",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0IiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdCIsImlhdCI6MTc1OTY1NDgwMywibmJmIjoxNzU5NjU0ODAzLCJleHAiOjE3NTk2NTU3MDMsInN1YiI6IjEiLCJlbWFpbCI6ImRlbW9AZXhhbXBsZS5jb20ifQ.4HQdugFcI3ps1UnaKYyo8l62o4fcfu66XldBJjOwXpE",
 						"type": "string"
 					}
 				]
@@ -277,6 +358,10 @@
 	"variable": [
 		{
 			"key": "API_URL",
+			"value": ""
+		},
+		{
+			"key": "REFRESH_TOKEN",
 			"value": ""
 		}
 	]
