@@ -23,18 +23,4 @@ return function (App $app, $authMiddleware) {
 
         return Helpers::jsonSuccess($resp, $serviceResponse);
     });
-
-    // POST /auth/refresh
-    $app->post('/auth/refresh', function (Request $req, Response $resp) {
-        $body = $req->getParsedBody();
-        
-        $service = new AuthService(DB::get());
-        $serviceResponse = $service->rotateRefreshToken($body);
-
-        if (isset($serviceResponse['error']) && $serviceResponse['error']) {
-            return Helpers::jsonError($resp, $serviceResponse['message'], $serviceResponse['code']);
-        }
-
-        return Helpers::jsonSuccess($resp, $serviceResponse);
-    });
 };

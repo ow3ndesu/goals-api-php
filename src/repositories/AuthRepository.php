@@ -135,9 +135,7 @@ class AuthRepository {
         ];
     }
 
-    public function rotateRefreshToken(array $body): ?array {
-        $refresh = $body['refresh_token'] ?? null;
-
+    public function refreshTokens(string $refresh): ?array {
         if (!$refresh) {
             return [
                 'error' => true,
